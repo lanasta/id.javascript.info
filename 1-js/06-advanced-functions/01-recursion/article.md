@@ -1,18 +1,18 @@
-# Recursion and stack
+# Rekursi dan stack
 
-Let's return to functions and study them more in-depth.
+Mari kita kembali ke fungsi dan mempelajarinya lebih dalam.
 
-Our first topic will be *recursion*.
+Topik pertama kita adalah *recursion*(pengulangan).
 
-If you are not new to programming, then it is probably familiar and you could skip this chapter.
+Jika kamu tidak baru dalam hal programing, kamu mungkin sudah akrab dengan rekursi dan bisa meloncati bab ini.
 
-Recursion is a programming pattern that is useful in situations when a task can be naturally split into several tasks of the same kind, but simpler. Or when a task can be simplified into an easy action plus a simpler variant of the same task. Or, as we'll see soon, to deal with certain data structures.
+Rekursi adalah pola programing yang berguna di dalam situasi-situasi dimana sesuatu tugas bisa dengan alami dibagikan ke beberapa tugas-tugas yang sama jenisnya, tetapi lebih sederhana. Atau kapan sesuatu tugas bisa disederhanakan menjadi aksi yang gampang ditambah varian lebih biasa dari tugas yang sama. Atau, dan kita akan lihat segera, untuk menangani struktur data tertentu.
 
-When a function solves a task, in the process it can call many other functions. A partial case of this is when a function calls *itself*. That's called *recursion*.
+Ketika sebuah fungsi menyelesaikan suatu tugas, di dalam prosesnya ia bisa memanggil banyak fungsi-fungsi yang lain. Hal parsial dari ini adalah ketika sesuatu fungsi memanggil *dirinya sendiri*. Itu yang disebut *rekursi*.
 
-## Two ways of thinking
+## Dua cara berfikir
 
-For something simple to start with -- let's write a function `pow(x, n)` that raises `x` to a natural power of `n`. In other words, multiplies `x` by itself `n` times.
+Bagi sesuatu yang sederhana untuk memulai -- mari kita tulis fungsi `pow(x, n` yang memangkatkan `x` ke nilai `n`. Dalam kata lain, mengalikan `x` dengan dirinya sendiri `n` kali.
 
 ```js
 pow(2, 2) = 4
@@ -20,15 +20,15 @@ pow(2, 3) = 8
 pow(2, 4) = 16
 ```
 
-There are two ways to implement it.
+Ada dua cara untuk mengimplementasinya.
 
-1. Iterative thinking: the `for` loop:
+1. Pemikiran iteratif: loop `for`:
 
     ```js run
     function pow(x, n) {
       let result = 1;
 
-      // multiply result by x n times in the loop
+      // kalikan hasil x n kali di dalam loop
       for (let i = 0; i < n; i++) {
         result *= x;
       }
@@ -39,7 +39,7 @@ There are two ways to implement it.
     alert( pow(2, 3) ); // 8
     ```
 
-2. Recursive thinking: simplify the task and call self:
+2. Pemikiran rekursif: sederhanakan tugas dan panggilah diri sendiri:
 
     ```js run
     function pow(x, n) {
@@ -53,9 +53,9 @@ There are two ways to implement it.
     alert( pow(2, 3) ); // 8
     ```
 
-Please note how the recursive variant is fundamentally different.
+Perhatikan bagaimana varian rekursifnya berbeda secara fundamental.
 
-When `pow(x, n)` is called, the execution splits into two branches:
+Ketika `pow(x, n)` dipanggil, eksekusinya terbagi ke dua cabang:
 
 ```js
               if n==1  = x
@@ -65,27 +65,27 @@ pow(x, n) =
               else     = x * pow(x, n - 1)
 ```
 
-1. If `n == 1`, then everything is trivial. It is called *the base* of recursion, because it immediately produces the obvious result: `pow(x, 1)` equals `x`.
-2. Otherwise, we can represent `pow(x, n)` as `x * pow(x, n - 1)`. In maths, one would write <code>x<sup>n</sup> = x * x<sup>n-1</sup></code>. This is called *a recursive step*: we transform the task into a simpler action (multiplication by `x`) and a simpler call of the same task (`pow` with lower `n`). Next steps simplify it further and further until `n` reaches `1`.
+1. Jika `n == 1`, maka semuanya menjadi gampang. Ini dipanggil *dasar* rekursi, karena ia dengan cepat menghasilkan nilai yang jelas: `pow(x, 1)` sama dengan `x`. 
+2. Jika tidak, kita bisa merepresentasikan `pow(x, n)` sebagai `x * pow(x, n - 1)`. Di matematika, orang menulisnya <code>x<sup>n</sup> = x * x<sup>n-1</sup></code>. Ini disebut *langkah rekursif*: kita merubah tugasnya menjadi aksi yang lebih sederhana (`pow` dengan nilai `n` lebih rendah). Langkah-langkah selanjutnya menyederhanakannya lebih lagi sampai `n` menjadi `1`.
 
-We can also say that `pow` *recursively calls itself* till `n == 1`.
+Kita juga bisa bilang bahwa `pow` *memanggil dirinya sendiri secara rekursif* sampai `n == 1`.
 
-![recursive diagram of pow](recursion-pow.svg)
+![diagram rekursif pow](recursion-pow.svg)
 
 
-For example, to calculate `pow(2, 4)` the recursive variant does these steps:
+Sebagai contoh, untuk menghitung `pow(2, 4)` varian rekursifnya mengikuti langkah-langkah ini:
 
 1. `pow(2, 4) = 2 * pow(2, 3)`
 2. `pow(2, 3) = 2 * pow(2, 2)`
 3. `pow(2, 2) = 2 * pow(2, 1)`
 4. `pow(2, 1) = 2`
 
-So, the recursion reduces a function call to a simpler one, and then -- to even more simpler, and so on, until the result becomes obvious.
+Jadi, rekursinya mengurangi suatu panggilan fungsi menjadi lebih sederhana, lalu -- lebih dan lebih sederhana lagi, dan sebagainya, sampai hasilnya menjadi jelas.
 
-````smart header="Recursion is usually shorter"
-A recursive solution is usually shorter than an iterative one.
+````smart header="Rekursi biasanya lebih pendek"
+Solusi rekursif biasanya lebih pendek dari pada yang iteratif.
 
-Here we can rewrite the same using the conditional operator `?` instead of `if` to make `pow(x, n)` more terse and still very readable:
+Disini kita bisa menulis ulang yang sama dengan operator kondisional `?` dan bukan `if` untuk membuat `pow(x, n)` lebih pendek dan masih gampang dibaca:
 
 ```js run
 function pow(x, n) {
