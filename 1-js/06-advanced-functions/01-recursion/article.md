@@ -85,7 +85,7 @@ Jadi, rekursinya mengurangi suatu panggilan fungsi menjadi lebih sederhana, lalu
 ````smart header="Rekursi biasanya lebih pendek"
 Solusi rekursif biasanya lebih pendek dari pada yang iteratif.
 
-Disini kita bisa menulis ulang yang sama dengan operator kondisional `?` dan bukan `if` untuk membuat `pow(x, n)` lebih pendek dan masih gampang dibaca:
+Disini kita bisa menulis ulang yang sama dengan operator kondisional `?` melainkan `if` untuk membuat `pow(x, n)` lebih pendek dan masih gampang dibaca:
 
 ```js run
 function pow(x, n) {
@@ -94,45 +94,45 @@ function pow(x, n) {
 ```
 ````
 
-The maximal number of nested calls (including the first one) is called *recursion depth*. In our case, it will be exactly `n`.
+Hitungan maksimum panggilan berlapis (termasuk yang pertama) disebut *kedalaman rekursi*. Dalam contoh kita, tepatnya `n`.
 
-The maximal recursion depth is limited by JavaScript engine. We can rely on it being 10000, some engines allow more, but 100000 is probably out of limit for the majority of them. There are automatic optimizations that help alleviate this ("tail calls optimizations"), but they are not yet supported everywhere and work only in simple cases.
+Kedalaman maksimum rekursi dibatasi dengan engine JavaScript. Kita bisa mengandalkan 1000, beberapa engine bisa memungkinkan lebih, tapi 100000 biasanya kemungkinan besar di luar batas. Ada optimisiasi otomatis yang bisa meringankan ini ("tail calls optimizations"), tetapi belum di dukung dimana-mana dan hanya berfungsi untuk hal yang sederhana.
 
-That limits the application of recursion, but it still remains very wide. There are many tasks where recursive way of thinking gives simpler code, easier to maintain.
+Hal itu membatasi aplikasi rekursi, tetapi aplikasinya masih tetap sangat luas. Ada banyak tugas dimana pemikiran rekursif menghasilkan kode yang lebih sederhana, yang lebih gampang dipelihara.
 
-## The execution context and stack
+## Eksekusi konteks dan stack
 
-Now let's examine how recursive calls work. For that we'll look under the hood of functions.
+Sekarang mari kita periksa bagaimana panggilan rekursif bekerja. Untuk itu kita akan melihat dibawah tudung fungsi-fungsi.
 
-The information about the process of execution of a running function is stored in its *execution context*.
+Informasi tentang proses eksekusi suatu fungsi disimpan di dalam *konteks eksekusi*-nya.
 
-The [execution context](https://tc39.github.io/ecma262/#sec-execution-contexts) is an internal data structure that contains details about the execution of a function: where the control flow is now, the current variables, the value of `this` (we don't use it here) and few other internal details.
+[Eksekusi konteks](https://tc39.github.io/ecma262/#sec-execution-contexts) adalah struktur data internal yang berisi detail tentang eksekusi sebuah fungsi: di mana aliran kontrolnya, variabelnya, nilai dari `this` (kita tidak memakainya disini) dan beberapa detail intern yang lain.
 
-One function call has exactly one execution context associated with it.
+Satu panggilan fungsi mempunyai tepat satu konteks eksekusi terkait dengannya.
 
-When a function makes a nested call, the following happens:
+Ketika sebuah fungsi membuat panggilan nested, hal ini terjadi:
 
-- The current function is paused.
-- The execution context associated with it is remembered in a special data structure called *execution context stack*.
-- The nested call executes.
-- After it ends, the old execution context is retrieved from the stack, and the outer function is resumed from where it stopped.
+- Fungsi saat ini dijedakan.
+- Konteks eksekusi yang terkait dengannya akan disimpan dalam struktur data spesial yang disebut *stack konteks eksekusi*.
+- Panggilan nested dijalankan
+- Setelah berakhir, konteks eksekusi yang lama diambil dari stack, dan fungsi luar dilanjutkan dari tempat ia berhenti.
 
-Let's see what happens during the `pow(2, 3)` call.
+Mari kita lihat apa yang terjadi di dalam panggilan `pow(2, 3)`.
 
 ### pow(2, 3)
 
-In the beginning of the call `pow(2, 3)` the execution context will store variables: `x = 2, n = 3`, the execution flow is at line `1` of the function.
+Di awal panggilan `pow(2, 3)` konteks eksekusinya akan menyimpan variabel: `x = 2, n = 3`, aliran eksekusinya berada di baris `1` daripada fungsinya.
 
-We can sketch it as:
+Kita bisa menggambarkanya sebagai:
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 1 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 3, di baris 1 }</span>
     <span class="function-execution-context-call">pow(2, 3)</span>
   </li>
 </ul>
 
-That's when the function starts to execute. The condition `n == 1` is false, so the flow continues into the second branch of `if`:
+Itu lokasi dimana fungsinya akan mulai tereksekusi. Kondisi `n == 1` itu salah, jadi alirannya berlanjut ke cabang kedua daripada `if`:
 
 ```js run
 function pow(x, n) {
@@ -148,37 +148,36 @@ function pow(x, n) {
 alert( pow(2, 3) );
 ```
 
-
-The variables are same, but the line changes, so the context is now:
+Variabelnya sama, tapi barisnya berganti, jadi konteksnya sekarang adalah:
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 3, di baris 5 }</span>
     <span class="function-execution-context-call">pow(2, 3)</span>
   </li>
 </ul>
 
-To calculate `x * pow(x, n - 1)`, we need to make a subcall of `pow` with new arguments `pow(2, 2)`.
+Untuk menghitung `x * pow(x, n - 1)`, kita perlu membuat sub-panggilan `pow` dengan argumen baru `pow(2, 2)`.
 
 ### pow(2, 2)
 
-To do a nested call, JavaScript remembers the current execution context in the *execution context stack*.
+Untuk membuat panggilan nested, JavaScript mengingat konteks eksekusi sekarang ini di dalam *stack konteks eksekusi*.
 
-Here we call the same function `pow`, but it absolutely doesn't matter. The process is the same for all functions:
+Disini kita memanggil fungsi yang sama `pow`, tetapi itu tidak berpengaruh. Prosesnya sama bagi semua fungsi:
 
-1. The current context is "remembered" on top of the stack.
-2. The new context is created for the subcall.
-3. When the subcall is finished -- the previous context is popped from the stack, and its execution continues.
+1. Konteks sekarang "diingat" di atas stack atau tumpukan.
+2. Konteks barunya diciptakan untuk sub-panggilan.
+3. Ketika sub-panggilan selesai -- konteks sebelumnya akan di pop atau di angkat keluar dari stack, dan eksekusinya berlanjut.
 
-Here's the context stack when we entered the subcall `pow(2, 2)`:
+Ini konteks stack-nya ketika kita memasuki sub-panggilan `pow(2, 2)`:
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 2, at line 1 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 2, di baris 1 }</span>
     <span class="function-execution-context-call">pow(2, 2)</span>
   </li>
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 3, di baris 5 }</span>
     <span class="function-execution-context-call">pow(2, 3)</span>
   </li>
 </ul>
