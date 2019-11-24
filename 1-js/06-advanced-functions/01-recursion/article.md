@@ -182,42 +182,42 @@ Ini konteks stack-nya ketika kita memasuki sub-panggilan `pow(2, 2)`:
   </li>
 </ul>
 
-The new current execution context is on top (and bold), and previous remembered contexts are below.
+Konteks eksekusi barunya ada diatas (dan bold), dan konteks-konteks sebelumnya ada dibawah.
 
-When we finish the subcall -- it is easy to resume the previous context, because it keeps both variables and the exact place of the code where it stopped.
+Ketika kita menyelesaikan subcallnya -- mudah untuk melanjutkan konteks sebelumnya, karena ia menyimpan kedua variabelnya dan lokasi kode dimana ia berhenti.
 
 ```smart
-Here in the picture we use the word "line", as our example there's only one subcall in line, but generally a single line of code may contain multiple subcalls, like `pow(…) + pow(…) + somethingElse(…)`.
+Di dalam gambar ini kita menggunakan kata "line" (baris), seperti di contoh hanya ada satu subcall di baris, tetapi umumnya satu baris kode bisa mengandung beberapa subcall, seperti `pow(…) + pow(…) + yangLain(…)`.
 
-So it would be more precise to say that the execution resumes "immediately after the subcall".
+Jadi akan lebih akurat untuk mengatakan bahwa eksekusinya berlanjut "langsung setelah subcall".
 ```
 
 ### pow(2, 1)
 
-The process repeats: a new subcall is made at line `5`, now with arguments `x=2`, `n=1`.
+Prosesnya berulang: subcall baru dipanggil di baris `5`, sekarang dengan argumen `x=2`, `n=1`.
 
-A new execution context is created, the previous one is pushed on top of the stack:
+Konteks eksekusi baru diciptakan, yang sebelumnya didorong ke atas stack (tumpukan):
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 1, at line 1 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 1, di baris 1 }</span>
     <span class="function-execution-context-call">pow(2, 1)</span>
   </li>
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 2, at line 5 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 2, di baris 5 }</span>
     <span class="function-execution-context-call">pow(2, 2)</span>
   </li>
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 3, di baris 5 }</span>
     <span class="function-execution-context-call">pow(2, 3)</span>
   </li>
 </ul>
 
-There are 2 old contexts now and 1 currently running for `pow(2, 1)`.
+Ada 2 konteks lama sekarang dan 1 yang sedang berjalan untuk `pow(2, 1)`.
 
-### The exit
+### The exit (proses keluar)
 
-During the execution of `pow(2, 1)`, unlike before, the condition `n == 1` is truthy, so the first branch of `if` works:
+Saat `pow(2, 1)` dieksekusi, berbeda dari sebelumnya, kondisi `n == 1` benar, jadi cabang pertama dari `if` berlaku:
 
 ```js
 function pow(x, n) {
@@ -231,18 +231,18 @@ function pow(x, n) {
 }
 ```
 
-There are no more nested calls, so the function finishes, returning `2`.
+Tidak ada lagi panggilan nested, jadi fungsinya selesai, mengembalikan `2`.
 
-As the function finishes, its execution context is not needed anymore, so it's removed from the memory. The previous one is restored off the top of the stack:
+Saat fungsinya selesai, konteks eksekusinya tidak diperlukan lagi, jadi ia dikeluarkan dari memori. Yang sebelumnya dikembalikan ke atas stack:
 
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 2, at line 5 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 2, di baris 5 }</span>
     <span class="function-execution-context-call">pow(2, 2)</span>
   </li>
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
+    <span class="function-execution-context">Konteks: { x: 2, n: 3, di baris 5 }</span>
     <span class="function-execution-context-call">pow(2, 3)</span>
   </li>
 </ul>
